@@ -1,0 +1,226 @@
+\documentclass[border=30pt, multi, tikz]{standalone} 
+\usepackage{import}
+\usepackage{amsmath}
+\usepackage{graphicx} % Para incluir imágenes
+\subimport{layers/}{init}
+\usetikzlibrary{positioning}
+\usetikzlibrary{3d} % for including external image 
+
+\def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+\def\PoolColor{rgb:red,2;black,0.5}
+\def\FcColor{rgb:green,5;blue,5;white,5}
+\def\OutColor{rgb:blue,5;red,2.5;white,5}
+
+\newcommand{\copymidarrow}{\tikz \draw[-Stealth, line width=0.8mm, draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
+
+\begin{document}
+\begin{tikzpicture}
+\tikzstyle{connection}=[ultra thick, draw=\edgecolor, opacity=0.4]
+
+\node[canvas is zy plane at x=0] (temp) at (-1.5,0,0) {\includegraphics[width=3.857cm,height=3.857cm]{face.jpg}};
+
+\pic[shift={(0,0,0)}] at (0,0,0) 
+    {Box={
+        name=vgg1,
+        fill=\ConvColor,
+        height=19.2,
+        width=2,
+        depth=19.2        }
+    };
+
+% Conector entre la imagen el bloque de capas VGG16
+\draw [connection]  (-1.4,0,0)    -- node {\midarrow} (0,0,0);
+
+\pic[shift={(0,0,0)}] at (vgg1-east) 
+    {Box={
+        name=vgg2,
+        fill=\ConvColor,
+        height=19.2,
+        width=2,
+        depth=19.2
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg2-east) 
+    {Box={
+        name=vgg3,
+        fill=\PoolColor,
+        height=9.6,
+        width=1,
+        depth=9.6,
+        opacity=0.5,
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg3-east) 
+    {Box={
+        name=vgg4,
+        fill=\ConvColor,
+        height=9.6,
+        width=4,
+        depth=9.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg4-east) 
+    {Box={
+        name=vgg5,
+        fill=\ConvColor,
+        height=9.6,
+        width=4,
+        depth=9.6
+        }
+    };
+
+% Bloque de convoluciones adicionales (sin conexiones y sin nombres de capas)
+\pic[shift={(1.5,0,0)}] at (vgg5-east) 
+    {Box={
+        name=conv_add1,
+        fill=\ConvColor,
+        height=9.6,
+        width=2,
+        depth=9.6
+        }
+    };
+
+% Conector entre el bloque VGG16 y el siguiente bloque de convoluciones
+\draw [connection]  (vgg5-east)    -- node {\midarrow} (conv_add1-west);
+
+\pic[shift={(0,0,0)}] at (conv_add1-east) 
+    {Box={
+        name=conv_add2,
+        fill=\ConvColor,
+        height=8.8,
+        width=2,
+        depth=8.8
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add2-east) 
+    {Box={
+        name=conv_add3,
+        fill=\ConvColor,
+        height=7.6,
+        width=2,
+        depth=7.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add3-east) 
+    {Box={
+        name=conv_add4,
+        fill=\ConvColor,
+        height=5.6,
+        width=4,
+        depth=5.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add4-east) 
+    {Box={
+        name=conv_add5,
+        fill=\ConvColor,
+        height=1.2,
+        width=4,
+        depth=1.2
+        }
+    };
+
+% Bloque de capas lineales
+\pic[shift={(1.5,0,0)}] at (conv_add5-east) 
+    {Box={
+        name=fc1,
+        caption=FC1,
+        xlabel={{"1", }},
+        zlabel=\hfill 256,
+        fill=\FcColor,
+        height=0.65,
+        width=0.65,
+        depth=12
+        }
+    };
+
+% Conector entre el bloque de convoluciones adicionales y el bloque de capas lineales
+\draw [connection]  (conv_add5-east)    -- node {\midarrow} (fc1-west);
+    
+\pic[shift={(1.5,0,0)}] at (fc1-east) 
+    {Box={
+        name=fc2,
+        caption=FC2,
+        xlabel={{"1", }},
+        zlabel=64,
+        fill=\FcColor,
+        height=0.65,
+        width=0.65,
+        depth=3
+        }
+    };
+\draw [connection]  (fc1-east)    -- node {\midarrow} (fc2-west);
+
+% Bloque VGG16 (solo las capas especificadas y con etiquetas ajustadas)
+\node[anchor=south] at (0.4,-4.2) {  \begin{tabular}{c}
+    \textbf{VGG16} \\
+    (first 9 layers)
+  \end{tabular}
+};
+% Nombre del bloque de convoluciones adicionales
+\node[anchor=south] at (5.2,-2.8) {
+  \begin{tabular}{c}
+    \textbf{CONV FACE} \\
+    (dilation convs)
+  \end{tabular}
+};
+
+% Tamaño final de bloques
+\node[anchor=south] at (-0.8,2.7) {96x96x3};
+\node[anchor=south] at (1.7,2.7) {96x96x64};
+\node[anchor=south] at (3,1.4) {48x48x128};
+\node[anchor=south] at (7,0.25) {6x6x128};
+
+% Leyenda de colores
+\begin{scope}[shift={(6,-4,0)}] 
+    % Conv2D+BN+ReLU
+    \pic[shift={(0,0,0)}] at (0,0,0) 
+        {Box={
+            name=convlegend,
+            caption=,
+            xlabel={{"", }},
+            ylabel=,
+            zlabel=,
+            fill=\ConvColor,
+            height=1.2,
+            width=1.2,
+            depth=1.2
+            }
+        };
+    \node[right=0.5cm of convlegend-east] {\textbf{Conv2D+BN+ReLU}};
+
+    % MaxPool2D
+    \pic[shift={(0,-0.7,0)}] at (0,0,0)  
+        {Box={
+            name=poollegend,
+            caption=,
+            xlabel={{"", }},
+            ylabel=,
+            zlabel=,
+            fill=\PoolColor,
+            height=1.2,
+            width=1.2,
+            depth=1.2
+            }
+        };
+    \node[right=0.5cm of poollegend-east] {\textbf{MaxPool2D}};
+
+    % Fully Connected
+    \pic[shift={(0,-1.4,0)}] at (0,0,0)  
+        {Box={
+            name=fclegend,
+            caption=,
+            xlabel={{"", }},
+            ylabel=,
+            zlabel=,
+            fill=\FcColor,
+            height=1.2,
+            width=1.2,
+            depth=1.2
+            }
+        };
+    \node[right=0.5cm of fclegend-east] {\textbf{FC+ReLU+BN}};
+\end{scope}
+
+\end{tikzpicture}
+\end{document}

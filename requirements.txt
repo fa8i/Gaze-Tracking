@@ -1,0 +1,47 @@
+# Python version: 3.9.20
+
+h5py==3.12.1
+joblib==1.4.2
+matplotlib==3.4.3
+matplotlib-inline==0.1.7
+mediapipe==0.10.15
+numpy==1.26.4
+
+# paqutes de nvidia utilizados para ejecucion en gpu
+nvidia-cublas-cu11==11.10.3.66      
+nvidia-cuda-cupti-cu11==11.7.101
+nvidia-cuda-nvrtc-cu11==11.7.99
+nvidia-cuda-runtime-cu11==11.7.99
+nvidia-cudnn-cu11==8.5.0.96
+nvidia-cufft-cu11==10.9.0.58
+nvidia-curand-cu11==10.2.10.91
+nvidia-cusolver-cu11==11.4.0.1
+nvidia-cusparse-cu11==11.7.4.91
+nvidia-nccl-cu11==2.14.3
+nvidia-nccl-cu12==2.23.4
+nvidia-nvtx-cu11==11.7.91
+
+opencv-contrib-python==4.10.0.84
+opencv-python==4.5.1.48
+opencv-python-headless==4.10.0.84
+
+pandas==2.2.3
+pgi==0.0.11.2   # Recomendable Linux-Ubuntu. En windows instalación mediante wheel
+protobuf==3.20.3
+PyYAML==6.0
+scikit-image==0.24.0
+scikit-learn==1.5.2
+scipy==1.13.1
+
+tensorboard==2.17.1
+tensorboard-data-server==0.7.2
+
+#importante compatibilidad entre pytorch-lightning, torch y torchvision + CUDA
+pytorch-lightning==1.4.9  
+torch==2.0.1
+torchmetrics==0.6.0
+torchvision==0.15.2
+tensorflow==2.17.0
+tensorflow-io-gcs-filesystem==0.37.1
+xgboost==2.1.1
+catboost==1.2.7

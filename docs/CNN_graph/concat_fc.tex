@@ -1,0 +1,495 @@
+\documentclass[border=30pt, multi, tikz]{standalone} 
+\usepackage{import}
+\usepackage{amsmath}
+\usepackage{graphicx} % Para incluir imágenes
+\subimport{layers/}{init}
+\usetikzlibrary{positioning}
+\usetikzlibrary{3d} % for including external image 
+
+% Definición de colores y comandos para ambas gráficas
+\def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+\def\PoolColor{rgb:red,2;black,0.5}
+\def\FcColor{rgb:green,5;blue,5;white,5}
+\def\OutColor{rgb:blue,3.5;green,5;black,5}
+\def\SEColor{rgb:blue,5;green,2.5;white,5}
+\def\WindowColor{rgb:blue,4;yellow,1;black,0.5}
+
+\newcommand{\copymidarrow}{\tikz \draw[-Stealth, line width=0.8mm, draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+% Gráfica inferior (antes era la superior)
+\tikzstyle{connection}=[ultra thick, draw=\edgecolor, opacity=0.4]
+\node[canvas is zy plane at x=0] (temp) at (-1.7,9.4,2.2) {\includegraphics[width=3.857cm,height=2.571cm]{left_eye.jpg}};
+\node[canvas is zy plane at x=0] (temp) at (-1.7,9.4,-2) {\includegraphics[width=3.857cm,height=2.571cm]{right_eye.jpg}};
+
+\pic[shift={(0,9.2,0)}] at (0,0,0) 
+    {Box={
+        name=window,
+        caption=\Large \textbf{$\times 2$ CONV EYES} \\ \large {(Shared weights)},
+        fill=\WindowColor,  
+        height=25,
+        width=35,
+        depth=34.8,
+        opacity=0.05}
+    };
+
+\draw [connection]  (-1.4,9.4,2.6) -- node {\midarrow} (0,9.4,2.6);
+\draw [connection]  (-1.4,9.4,-1) -- node {\midarrow} (0,9.4,-1);
+
+\pic[shift={(0,0,0)}] at (0,9,0) 
+    {Box={
+        name=vgg1,
+        fill=\ConvColor,
+        height=12.8,
+        width=2,
+        depth=19.2        }
+    };
+\pic[shift={(0,0,0)}] at (vgg1-east) 
+    {Box={
+        name=vgg2,
+        fill=\ConvColor,
+        height=12.8,
+        width=2,
+        depth=19.2
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg2-east) 
+    {Box={
+        name=vgg3,
+        fill=\PoolColor,
+        height=6.4,
+        width=1,
+        depth=9.6,
+        opacity=0.5
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg3-east) 
+    {Box={
+        name=vgg4,
+        fill=\ConvColor,
+        height=6.4,
+        width=4,
+        depth=9.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg4-east) 
+    {Box={
+        name=vgg5,
+        fill=\ConvColor,
+        height=6.4,
+        width=4,
+        depth=9.6
+        }
+    };
+
+\pic[shift={(1.5,0,0)}] at (vgg5-east) 
+    {Box={
+        name=conv_add1,
+        fill=\ConvColor,
+        height=6.4,
+        width=2,
+        depth=9.6
+        }
+    };
+
+\draw [connection]  (vgg5-east) -- node {\midarrow} (conv_add1-west);
+
+\pic[shift={(0,0,0)}] at (conv_add1-east) 
+    {Box={
+        name=conv_add2,
+        fill=\ConvColor,
+        height=5.6,
+        width=2,
+        depth=8.8
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add2-east) 
+    {Box={
+        name=conv_add3,
+        fill=\ConvColor,
+        height=4.4,
+        width=2,
+        depth=7.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add3-east) 
+    {Box={
+        name=conv_add4,
+        fill=\ConvColor,
+        height=2.4,
+        width=4,
+        depth=5.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add4-east) 
+    {Box={
+        name=conv_add5,
+        fill=\ConvColor,
+        height=0.8,
+        width=4,
+        depth=1.2
+        }
+    };
+
+\pic[shift={(1.7,-0.3,0)}] at (window-east) {Ball={name=concat, fill=\OutColor, opacity=0.6, radius=1.5, logo=$||$}};
+
+\draw [connection] (8.3,10,1.5) -- node {\midarrow}  ++(1.5,0,0) -- (concat-ne);
+\draw [connection] (8.3,10,4.5) -- node {\midarrow}  ++(1.5,0,0) -- (concat-sw);
+
+\pic[shift={(1.5,0,0)}] at (concat-east) 
+    {Box={
+        name=SE1,
+        fill=\SEColor,
+        height=0.8,
+        width=4,
+        depth=1.2
+        }
+    };
+
+\draw [connection]  (concat-ee) -- node {\midarrow} (SE1-west);
+
+\pic[shift={(0,0,0)}] at (SE1-east) 
+    {Box={
+        name=conv_add6,
+        fill=\ConvColor,
+        height=0.8,
+        width=4,
+        depth=1.2
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add6-east) 
+    {Box={
+        name=SE2,
+        fill=\SEColor,
+        height=0.8,
+        width=4,
+        depth=1.2
+        }
+    };
+\pic[shift={(0,0,0)}] at (SE2-east) 
+    {Box={
+        name=conv_add7,
+        fill=\ConvColor,
+        height=0.8,
+        width=2,
+        depth=1.2
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add7-east) 
+    {Box={
+        name=SE3,
+        fill=\SEColor,
+        height=0.8,
+        width=2,
+        depth=1.2
+        }
+    };
+
+\pic[shift={(1.5,0,0)}] at (SE3-east)  
+    {Box={
+        name=fc1f,
+        caption=FC1,
+        xlabel={{"1", }},
+        zlabel=\hfill 512,
+        fill=\FcColor,
+        height=0.65,
+        width=0.65,
+        depth=18
+        }
+    };
+\draw [connection]  (SE3-east) -- node {\midarrow} (fc1f-west);
+
+\node[anchor=south] at (0.6,5.5) {  \begin{tabular}{c}
+    \textbf{VGG16} \\
+    (first 9 layers)
+  \end{tabular}
+};
+
+\node[anchor=south] at (4.2,5.5) {
+  \begin{tabular}{c}
+    \textbf{SEQ CONV} \\
+    (dilation convs)
+  \end{tabular}
+};
+\node[anchor=south] at (8,6.8) {\begin{tabular}{c} \textbf{CONCAT} \end{tabular}
+};
+\node[anchor=south] at (11.8,7.2) {
+  \begin{tabular}{c}
+    \textbf{SE LAYERS +} \\
+    \textbf{CONVS}
+  \end{tabular}
+};
+
+\node[anchor=south, rotate=45] at (-2.4,10) {96x64x3};
+\node[anchor=south, rotate=45] at (-0.7,11.7) {96x64x3};
+\node[anchor=south] at (1.9,11) {$96\times96\times64$};
+\node[anchor=south] at (3,10) {$48\times32\times128$};
+\node[anchor=south] at (6.7,9.2) {$6\times4\times128$};
+\node[anchor=south] at (8.8,9.6) {$6\times4\times256$};
+\node[anchor=south] at (13.2,9.1) {$6\times4\times128$};
+
+% Segunda gráfica (antes era la superior)
+\node[canvas is zy plane at x=0] (temp) at (-3.7,0,0) {\includegraphics[width=3.857cm,height=3.857cm]{face.jpg}};
+
+\pic[shift={(0,0,0)}] at (-2,0,0) 
+    {Box={
+        name=vgg1,
+        fill=\ConvColor,
+        height=19.2,
+        width=2,
+        depth=19.2        }
+    };
+
+\draw [connection]  (-3.4,0,0) -- node {\midarrow} (vgg1-west);
+
+\pic[shift={(0,0,0)}] at (vgg1-east) 
+    {Box={
+        name=vgg2,
+        fill=\ConvColor,
+        height=19.2,
+        width=2,
+        depth=19.2
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg2-east) 
+    {Box={
+        name=vgg3,
+        fill=\PoolColor,
+        height=9.6,
+        width=1,
+        depth=9.6,
+        opacity=0.5,
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg3-east) 
+    {Box={
+        name=vgg4,
+        fill=\ConvColor,
+        height=9.6,
+        width=4,
+        depth=9.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (vgg4-east) 
+    {Box={
+        name=vgg5,
+        fill=\ConvColor,
+        height=9.6,
+        width=4,
+        depth=9.6
+        }
+    };
+
+\pic[shift={(1.5,0,0)}] at (vgg5-east) 
+    {Box={
+        name=conv_add1,
+        fill=\ConvColor,
+        height=9.6,
+        width=2,
+        depth=9.6
+        }
+    };
+
+\draw [connection]  (vgg5-east) -- node {\midarrow} (conv_add1-west);
+
+\pic[shift={(0,0,0)}] at (conv_add1-east) 
+    {Box={
+        name=conv_add2,
+        fill=\ConvColor,
+        height=8.8,
+        width=2,
+        depth=8.8
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add2-east) 
+    {Box={
+        name=conv_add3,
+        fill=\ConvColor,
+        height=7.6,
+        width=2,
+        depth=7.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add3-east) 
+    {Box={
+        name=conv_add4,
+        fill=\ConvColor,
+        height=5.6,
+        width=4,
+        depth=5.6
+        }
+    };
+\pic[shift={(0,0,0)}] at (conv_add4-east) 
+    {Box={
+        name=conv_add5,
+        fill=\ConvColor,
+        height=1.2,
+        width=4,
+        depth=1.2
+        }
+    };
+
+\pic[shift={(1.5,0,0)}] at (conv_add5-east) 
+    {Box={
+        name=fc1,
+        caption=FC2,
+        xlabel={{"1", }},
+        zlabel=\hfill 256,
+        fill=\FcColor,
+        height=0.65,
+        width=0.65,
+        depth=12
+        }
+    };
+
+\draw [connection]  (conv_add5-east) -- node {\midarrow} (fc1-west);
+    
+\pic[shift={(1.5,0,0)}] at (fc1-east) 
+    {Box={
+        name=fc2,
+        caption=FC3,
+        xlabel={{"1", }},
+        zlabel=64,
+        fill=\FcColor,
+        height=0.65,
+        width=0.65,
+        depth=3
+        }
+    };
+\draw [connection]  (fc1-east) -- node {\midarrow} (fc2-west);
+
+% BOLA CONCAT2
+\pic[shift={(11.25,-0.50,11)}] at (window-east) {Ball={name=concat2, fill=\OutColor, opacity=0.6, radius=1.5, logo=$||$}};
+
+% CONCAT FACE + EYES
+\draw [connection] (fc1f-east) -- node {\midarrow}  ++(3.15,0,0) -- (concat2-ne);
+\draw [connection] (fc2-east) -- node {\midarrow}  ++(1.5,0,0) -- (concat2-sw);
+
+% ULTIMO BLOQUE DE CAPAS LINEALES
+\pic[shift={(1.5,0,0)}] at (concat2-east) 
+    {Box={
+        name=FC1F,
+        caption=FC4,
+        xlabel={{"1", }},
+        zlabel=\hfill 256,
+        fill=\FcColor,
+        height=0.65,
+        width=0.65,
+        depth=12
+        }
+    };
+\draw [connection]  (concat2-ee) -- node {\midarrow} (FC1F-west);
+\pic[shift={(1.5,0,0)}] at (FC1F-east) 
+    {Box={
+        name=FC2F,
+        caption=FC5,
+        xlabel={{"1", }},
+        zlabel=2,
+        fill=\FcColor,
+        height=0.65,
+        width=0.65,
+        depth=2
+        }
+    };
+\draw [connection]  (FC1F-east) -- node {\midarrow} (FC2F-west);
+
+% NOMBRES
+\node[anchor=south] at (-1.6,-4.2) {  \begin{tabular}{c}
+    \textbf{VGG16} \\
+    (first 9 layers)
+  \end{tabular}
+};
+
+\node[anchor=south] at (3.2,-2.8) {
+  \begin{tabular}{c}
+    \textbf{SEQ CONV} \\
+    (dilation convs)
+  \end{tabular}
+};
+\node[anchor=south] at (13.5,3) {\begin{tabular}{c} \textbf{CONCAT} \end{tabular}
+};
+
+\node[anchor=south, rotate=45] at (-3.5,2.1) {96x96x3};
+\node[anchor=south] at (-0.3,2.7) {$96\times96\times64$};
+\node[anchor=south] at (1,1.4) {$48\times48\times128$};
+\node[anchor=south] at (5,0.25) 
+{$6\times6\times128$};
+\node[anchor=south] at (14.1,5) {$1\times576$};
+
+% Leyenda de colores
+\begin{scope}[shift={(13,0,0)}] 
+    % Conv2D+BN+ReLU
+    \pic[shift={(0,0,0)}] at (0,0,0) 
+        {Box={
+            name=convlegend,
+            caption=,
+            xlabel={{"", }},
+            ylabel=,
+            zlabel=,
+            fill=\ConvColor,
+            height=1.2,
+            width=1.2,
+            depth=1.2
+            }
+        };
+    \node[right=0.5cm of convlegend-east] {\textbf{Conv2D+BN+ReLU}};
+
+    % MaxPool2D
+    \pic[shift={(0,-0.7,0)}] at (0,0,0)  
+        {Box={
+            name=poollegend,
+            caption=,
+            xlabel={{"", }},
+            ylabel=,
+            zlabel=,
+            fill=\PoolColor,
+            height=1.2,
+            width=1.2,
+            depth=1.2
+            }
+        };
+    \node[right=0.5cm of poollegend-east] {\textbf{MaxPool2D}};
+
+        % MaxPool2D
+    \pic[shift={(0,-1.4,0)}] at (0,0,0)  
+        {Box={
+            name=SElegend,
+            caption=,
+            xlabel={{"", }},
+            ylabel=,
+            zlabel=,
+            fill=\SEColor,
+            height=1.2,
+            width=1.2,
+            depth=1.2
+            }
+        };
+    \node[right=0.5cm of SElegend-east] {\textbf{SE Layer}};
+
+    % Fully Connected
+    \pic[shift={(0,-2.1,0)}] at (0,0,0)  
+        {Box={
+            name=fclegend,
+            caption=,
+            xlabel={{"", }},
+            ylabel=,
+            zlabel=,
+            fill=\FcColor,
+            height=1.2,
+            width=1.2,
+            depth=1.2
+            }
+        };
+    \node[right=0.5cm of fclegend-east] {\textbf{FC+ReLU+BN}};
+\end{scope}
+
+\end{tikzpicture}
+\end{document}
+
+
+\end{tikzpicture}
+
+\end{document}
