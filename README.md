@@ -64,7 +64,10 @@ A continuación se muestran las siguientes comparativas de errores angulares obt
 2. Modelo presentado junto al dataset utilizado en este proyecto (_MPIIFaceGaze_) en comparación con modelos más modernos basados en CNN: [It’s Written All Over Your Face: Full-Face Appearance-Based Gaze Estimation" de Zhang et al. (2017)](https://ieeexplore.ieee.org/document/8015018)
 ![Gráfica Comparativa 2](docs/results/MPI2017.png)
 
-3. Gráficas de error angular obtenido en los diferentes modelos entrenados en este proyecto con el dataset _MPIIFaceGaze_
+3. Modelo propuesto (amarillo a la izquierda) en comparación con los modelos más actuales de prediccion de mirada junto al modelo presentaso junto al dataset utilizado (_MPIIFaceGaze_).
+![Gráfica Comparativa 3](docs/results/actual_models.jpeg)
+
+4. Gráficas de error angular obtenido en los diferentes modelos entrenados en este proyecto con el dataset _MPIIFaceGaze_
 ![Gráficas de validación y test](docs/results/cnn_models_val_comparation.png) 
 
 ## Resultados de modelo de regresión
