@@ -1,17 +1,17 @@
 
-# Proyecto de Fin de Máster: Gaze Tracking e Interacción mediante Gestos Faciales
+# Gaze Tracking e Interacción mediante Gestos Faciales
 
-Este proyecto forma parte del trabajo final de máster de **Data Science**. El objetivo principal es implementar un sistema de interacción con el ordenador que permita a los usuarios utilizar su mirada como input, así como realizar acciones mediante gestos o movimientos de la cabeza y la cara, utilizando técnicas avanzadas de *computer vision*.
+Este proyecto forma parte de mi trabajo final de máster de **Inteligencia Artificial**. El objetivo principal es implementar un sistema de interacción con el ordenador que permita a los usuarios utilizar su mirada como input, así como realizar acciones mediante gestos o movimientos de la cabeza y/o la cara, utilizando técnicas avanzadas de *computer vision*.
 
 ## Descripción del Proyecto
 
-El proyecto está enfocado en desarrollar una tecnología que facilite la interacción con dispositivos mediante el seguimiento de la mirada (*gaze tracking*) y el reconocimiento de gestos faciales. Esto permite a los usuarios controlar el ordenador sin necesidad de utilizar sus manos, lo que puede ser de gran utilidad en aplicaciones de accesibilidad, entretenimiento o escritura entre otras opciones.
+Este proyecto facilita la interacción con dispositivos mediante el seguimiento de la mirada (*gaze tracking*), la predicción del punto en pantalla de la mirada y el reconocimiento de gestos faciales. Esto permite a los usuarios controlar el ordenador sin necesidad de utilizar sus manos, lo que puede ser de gran utilidad en aplicaciones de accesibilidad, entretenimiento o escritura entre otras opciones.
 
 ### Metas del Proyecto
 
-1. **Desarrollo de un Sistema de Gaze Tracking**: Implementar un sistema robusto que utilice la mirada del usuario como input para controlar el ordenador.
-2. **Interacción Mediante Gestos Faciales**: Desarrollar métodos para reconocer gestos faciales y movimientos de la cabeza, permitiendo realizar acciones en el ordenador sin contacto físico.
-3. **Integración de Computer Vision**: Emplear técnicas de visión por computadora para mejorar la precisión y la experiencia del usuario en la interacción con el sistema.
+1. **Desarrollo de un Sistema de Gaze Tracking**: Implementar un sistema robusto que sea capaz de predecir el vector de la mirada del usuario.
+2. **Predicción del punto de mirada en pantalla**: Implementar una solucion que resuelva la predicción del punto de mirada en pantalla mediante la integración de técnicas geométricas y modelos de Machine Learning
+3. **Interacción Mediante Gestos Faciales**: Desarrollar métodos para reconocer gestos faciales y movimientos de la cabeza, permitiendo realizar acciones en el ordenador sin contacto físico.
 
 ### Dependencias
 
