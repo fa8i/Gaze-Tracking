@@ -64,19 +64,26 @@ A continuación se muestran las siguientes comparativas de errores angulares obt
 2. Modelo presentado junto al dataset utilizado en este proyecto (_MPIIFaceGaze_) en comparación con modelos más modernos basados en CNN: [It’s Written All Over Your Face: Full-Face Appearance-Based Gaze Estimation" de Zhang et al. (2017)](https://ieeexplore.ieee.org/document/8015018)
 ![Gráfica Comparativa 2](docs/results/MPI2017.png)
 
-3. Modelo propuesto (amarillo a la izquierda) en comparación con los modelos más actuales de prediccion de mirada junto al modelo presentaso junto al dataset utilizado (_MPIIFaceGaze_).
+3. Modelo propuesto (en amarillo, a la izquierda) en comparación con los modelos más actuales de prediccion de mirada y el modelo presentado junto al dataset utilizado para el entenamiento (_MPIIFaceGaze_) (azul a la derecha).
 ![Gráfica Comparativa 3](docs/results/actual_models.jpeg)
 
 4. Gráficas de error angular obtenido en los diferentes modelos entrenados en este proyecto con el dataset _MPIIFaceGaze_
 ![Gráficas de validación y test](docs/results/cnn_models_val_comparation.png) 
 
+
 ## Resultados de modelo de regresión
 
 A continuación se muestran las graficas de error en píxeles mediante el modelo regresivo a medida que aumenta el número de datos:
 ![Regresión1](docs/results/fine-tuning_regression0.png) 
+
 ![Regresión3](docs/results/fine-tuning_regression1.png) 
+
 ![Regresión3](docs/results/fine-tuning_regression2.png) 
+
+A continuación se muestran las graficas de dispersión de paridad (Predicción vs Real) utiliza para medir la bondad de ajuste de las predicciones de coordenadas para el eje X y el eje Y:
+
 ![Regresión4](docs/results/fine-tuning_Catboost.png) 
+
 
 ## Ejemplos
 
