@@ -2,50 +2,50 @@
 
 A high-precision, appearance-based gaze tracking system enabling real-time, hands-free human-computer interaction using deep learning, geometric modeling, and personalized calibration.
 
-This project implements a complete end-to-end pipeline for gaze estimation, from camera calibration and gaze vector prediction to personalized screen mapping and gesture-based interaction. The system is evaluated against multiple generations of gaze estimation models, including early appearance-based methods, modern full-face CNN architectures, and recent state-of-the-art systems.
+This project implements a complete end-to-end gaze estimation pipeline, from camera calibration and gaze vector prediction to personalized screen mapping and gesture-based interaction. The system is evaluated across multiple generations of gaze estimation benchmarks, demonstrating strong performance compared to both historical and modern appearance-based gaze estimation models.
 
-The proposed architecture demonstrates highly competitive performance and strong robustness under real-world conditions using standard RGB cameras.
+The system is designed to operate using standard RGB cameras under real-world conditions.
 
 ---
 
 # Key Features
 
 • Appearance-based gaze estimation using a custom CNN architecture  
-• End-to-end gaze tracking pipeline  
+• Full end-to-end gaze tracking pipeline  
 • Personalized calibration via regression mapping  
 • Real-time inference and interaction  
 • Facial gesture recognition for hands-free control  
-• Gaze-controlled on-screen keyboard  
+• Gaze-controlled virtual keyboard  
 • Dynamic gaze heatmap visualization  
-• Modular and extensible system architecture  
+• Modular and extensible architecture  
 
 ---
 
-# System Pipeline
+# System Overview
 
-The system consists of four main stages:
+The pipeline consists of four main stages:
 
 1. Camera Calibration  
-   Computes intrinsic camera parameters for geometric consistency.
+   Computes intrinsic camera parameters required for accurate geometric modeling.
 
 2. Gaze Vector Estimation  
    A convolutional neural network predicts the 3D gaze vector from facial appearance.
 
-3. Personalized Screen Mapping  
-   A regression model maps gaze vectors into screen coordinates.
+3. Screen Mapping via Personalized Calibration  
+   A regression model maps gaze vectors to screen-space coordinates.
 
 4. Interaction Layer  
-   Enables real-time computer interaction via gaze and facial gestures.
+   Enables real-time hands-free interaction using gaze and facial gestures.
 
-Pipeline overview:
+Pipeline summary:
 
-Camera → Face Detection → Eye Extraction → CNN → Gaze Vector → Regression → Screen Coordinates → Interaction
+Camera → Face Detection → Eye Extraction → CNN → Gaze Vector → Regression Mapping → Screen Coordinates → Interaction
 
 ---
 
 # Model Architecture
 
-The gaze estimation model is a custom convolutional neural network optimized for appearance-based gaze prediction under unconstrained conditions.
+The gaze estimation model is a custom convolutional neural network designed for appearance-based gaze prediction under unconstrained real-world conditions.
 
 Architecture visualization:
 
@@ -54,68 +54,90 @@ Architecture visualization:
 The architecture was designed to:
 
 • Extract robust gaze features from eye and facial appearance  
-• Generalize across users and illumination conditions  
-• Enable accurate gaze vector prediction  
+• Generalize across users and lighting conditions  
+• Enable stable and accurate gaze vector prediction  
 
 Architecture diagrams were generated using PlotNeuralNet.
 
 ---
 
-# Benchmark Evaluation Across Generations of Gaze Estimation
+# Training Convergence and Angular Error
 
-This project evaluates gaze estimation performance across three key generations of appearance-based gaze estimation systems, reflecting the evolution of the field.
+The following figure shows the angular error evolution during training for multiple CNN architectures and configurations evaluated on the MPIIFaceGaze dataset.
+
+Each curve represents a different model configuration. The minimum validation and test errors achieved by each model are highlighted.
+
+![Training Convergence](docs/results/cnn_models_val_comparation.png)
+
+Key observations:
+
+• Best validation angular error: 1.119°  
+• Best test angular error: 1.190°  
+• Consistent convergence across multiple architectures  
+• Stable training behavior and smooth error reduction  
+• Minimal validation-to-test gap, indicating strong generalization  
+
+These results demonstrate that the proposed architecture achieves stable convergence and low angular error under real-world appearance-based gaze estimation conditions.
 
 ---
 
-## First Generation: MPIIGaze (2015) — Appearance-Based Gaze Estimation in the Wild
+# Benchmark Evaluation Across Generations of Gaze Estimation
 
-MPIIGaze was the first large-scale dataset collected under unconstrained, real-world conditions and established the first realistic benchmark for appearance-based gaze estimation.
+This project evaluates performance across three major generations of appearance-based gaze estimation systems, reflecting the evolution of the field.
 
-The comparison below includes the original baseline model introduced alongside MPIIGaze and alternative regression-based approaches evaluated within the same experimental framework.
+---
+
+## First Generation: MPIIGaze (2015)
+
+MPIIGaze was the first large-scale gaze dataset collected under unconstrained real-world conditions and established the first realistic benchmark for appearance-based gaze estimation.
+
+The comparison below includes the original baseline model and regression-based methods evaluated within this benchmark framework.
 
 ![MPIIGaze Comparison](docs/results/MPI2015.png)
 
-This generation established appearance-based CNN methods as the dominant approach over traditional regression and geometric methods.
+This generation established CNN-based appearance models as significantly more effective than traditional regression and geometric approaches.
 
 ---
 
-## Second Generation: MPIIFaceGaze (2017) — Full-Face CNN-Based Gaze Estimation
+## Second Generation: MPIIFaceGaze (2017)
 
-MPIIFaceGaze introduced full-face gaze estimation and significantly improved performance compared to earlier eye-only architectures.
+MPIIFaceGaze introduced full-face gaze estimation and improved performance compared to earlier eye-only approaches.
 
-The proposed architecture achieves highly competitive performance compared to widely used CNN models such as:
+The proposed architecture achieves competitive performance compared to established CNN-based models including:
 
 • iTracker  
-• Single-eye architectures  
-• Two-eye architectures  
-• Full-face CNN models  
+• Single-eye models  
+• Two-eye models  
+• Full-face CNN architectures  
 
 ![MPIIFaceGaze Comparison](docs/results/MPI2017.png)
 
-These results demonstrate the effectiveness of the architecture compared to established full-face gaze estimation methods.
+This demonstrates the effectiveness of the architecture compared to standard full-face gaze estimation baselines.
 
 ---
 
-## Third Generation: Modern State-of-the-Art Gaze Estimation Models
+## Third Generation: Modern Appearance-Based Gaze Estimation Models
 
-This comparison includes recent appearance-based gaze estimation systems and modern architectures such as:
+This comparison includes modern gaze estimation architectures and recent appearance-based systems such as:
 
 • RT-GENE  
 • Gaze360  
-• Attention-based gaze estimation models  
-• Geometry-based and hybrid gaze tracking systems  
+• Attention-based CNN models  
+• Geometry-based hybrid systems  
 
 The proposed model is shown in yellow.
 
 ![State-of-the-Art Comparison](docs/results/actual_models.jpeg)
 
-The results demonstrate strong performance compared to modern gaze estimation systems, highlighting the effectiveness of the architecture and training methodology.
+The convergence analysis presented earlier confirms that the reported angular error values are achieved through stable training and consistent validation performance.
+
+These results demonstrate strong performance compared to modern gaze estimation systems.
 
 ---
 
 # Personalized Calibration Performance
 
-A regression-based calibration stage significantly improves screen-space accuracy by adapting the system to individual users.
+A personalized regression calibration stage significantly improves screen-space accuracy by adapting the system to individual users.
 
 Pixel error decreases as calibration sample size increases:
 
@@ -129,19 +151,19 @@ Regression parity plots:
 
 ![Regression Parity](docs/results/fine-tuning_Catboost.png)
 
-This calibration step enables precise gaze-based interaction using standard RGB cameras.
+This calibration stage enables precise gaze-based interaction using standard RGB cameras.
 
 ---
 
-# Real-Time Interaction Capabilities
+# Real-Time Interaction
 
-The system supports real-time interaction, including:
+The system supports real-time interaction including:
 
 • Cursor control via gaze  
-• Gesture-based action triggering  
+• Facial gesture-based action triggering  
 • Gaze-controlled virtual keyboard  
-• Real-time gaze visualization  
-• Temporal smoothing for stability  
+• Dynamic gaze heatmap visualization  
+• Temporal smoothing for stable interaction  
 
 Example:
 
@@ -169,24 +191,24 @@ Requires a standard chessboard calibration pattern.
 
 ---
 
-## Step 2 — Train or Load Gaze Model
+## Step 2 — Train or Load the Gaze Estimation Model
 
-Optional: train the model using MPIIFaceGaze:
+Optional: train using MPIIFaceGaze dataset:
 
     python src/train/preprocess_mpii_dataset.py
     python src/train/training.py
 
-Alternatively, use the provided pretrained model.
+Alternatively, use the pretrained model.
 
 ---
 
 ## Step 3 — Personalized Calibration
 
-Collect calibration data:
+Collect calibration samples:
 
     python src/data_collection/data_collection.py
 
-Train regression model:
+Train regression mapping:
 
     python src/regressor/gaze_csv.py
     python src/regressor/regression.py
@@ -199,14 +221,14 @@ Train regression model:
 
 Optional arguments:
 
-    --calibration_matrix_path
-    --model_path
-    --monitor_mm
-    --monitor_pixels
-    --visualize_preprocessing
-    --smoothing
-    --heatmap
-    --keyboard
+    --calibration_matrix_path  
+    --model_path  
+    --monitor_mm  
+    --monitor_pixels  
+    --visualize_preprocessing  
+    --smoothing  
+    --heatmap  
+    --keyboard  
 
 ---
 
@@ -227,13 +249,13 @@ Optional arguments:
 
 # Applications
 
-This system is suitable for:
+This system can be applied to:
 
 • Assistive technologies  
 • Accessibility interfaces  
-• Human-computer interaction research  
+• Human-computer interaction  
 • Hands-free computer control  
-• AR/VR interaction systems  
+• AR/VR systems  
 • Attention tracking  
 • Behavioral analysis  
 
@@ -241,14 +263,14 @@ This system is suitable for:
 
 # Technical Summary
 
-This project demonstrates a complete appearance-based gaze estimation pipeline combining:
+This project demonstrates a complete appearance-based gaze estimation pipeline integrating:
 
-• Deep learning  
-• Geometric modeling  
-• Personalized calibration  
-• Real-time interaction  
+• Deep learning-based gaze estimation  
+• Geometric camera modeling  
+• Personalized regression calibration  
+• Real-time gaze interaction  
 
-The system achieves strong performance across multiple gaze estimation benchmarks and enables accurate, real-time gaze-based computer interaction using standard hardware.
+The system achieves stable convergence and strong performance across multiple generations of gaze estimation benchmarks.
 
 ---
 
