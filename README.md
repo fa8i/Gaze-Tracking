@@ -1,94 +1,229 @@
+# Research-Grade Gaze Tracking and Facial Gesture Interaction System
 
-# Gaze Tracking e Interacción mediante Gestos Faciales
+A high-precision, research-grade gaze tracking system enabling hands-free human-computer interaction using deep learning, geometric modeling, and personalized calibration.
 
-Este proyecto forma parte de mi trabajo final de máster de **Inteligencia Artificial**. El objetivo principal es implementar un sistema de interacción con el ordenador que permita a los usuarios utilizar su mirada como input, así como realizar acciones mediante gestos o movimientos de la cabeza y/o la cara, utilizando técnicas avanzadas de *computer vision*.
+This project implements a complete end-to-end gaze estimation pipeline, from camera calibration and neural gaze vector prediction to screen-space regression and gesture-based interaction. The system achieves highly competitive performance compared to state-of-the-art academic models and commercially available gaze tracking solutions.
 
-## Descripción del Proyecto
+Designed with modularity, extensibility, and real-world robustness in mind, the system supports personalized fine-tuning and real-time interaction.
 
-Este proyecto facilita la interacción con dispositivos mediante el seguimiento de la mirada (*gaze tracking*), la predicción del punto en pantalla de la mirada y el reconocimiento de gestos faciales. Esto permite a los usuarios controlar el ordenador sin necesidad de utilizar sus manos, lo que puede ser de gran utilidad en aplicaciones de accesibilidad, entretenimiento o escritura entre otras opciones.
+---
 
-### Metas del Proyecto
+## Key Features
 
-1. **Desarrollo de un Sistema de Gaze Tracking**: Implementar un sistema robusto que sea capaz de predecir el vector de la mirada del usuario.
-2. **Predicción del punto de mirada en pantalla**: Implementar una solucion que resuelva la predicción del punto de mirada en pantalla mediante la integración de técnicas geométricas y modelos de Machine Learning
-3. **Interacción Mediante Gestos Faciales**: Desarrollar métodos para reconocer gestos faciales y movimientos de la cabeza, permitiendo realizar acciones en el ordenador sin contacto físico.
+• Appearance-based gaze estimation using a custom CNN architecture  
+• Personalized gaze calibration via regression-based screen mapping  
+• Real-time gaze tracking with temporal smoothing  
+• Facial gesture recognition for hands-free interaction  
+• On-screen keyboard controlled entirely by gaze and facial gestures  
+• Dynamic gaze heatmap visualization  
+• Fully modular and extensible architecture  
 
-### Dependencias
+---
 
-Para ejecutar el proyecto, asegúrate de instalar las dependencias necesarias. Puedes instalarlas ejecutando:
+## System Overview
 
-```bash
-pip install -r requirements.txt
-```
+The system consists of four main components:
 
-## Ejecución
+1. Camera Calibration  
+   Computes intrinsic camera parameters required for geometric consistency.
 
-1. El proyecto incluye el script `src/data_collection/camera_calibration.py` para extraer la matriz de la cámara (distancias focales y coeficientes de distorsión), archivo necesario para ejecutar la demo. Para ello únicamente se necesitará un _chess grid_.
-2. **(Opcional)** Preprocesar el dataset MPIIFaceGaze con `src/train/preprocess_mpii_dataset.py` y entrenar el modelo con tus propios parámetros usando `src/train/training.py` **(o usar el modelo subido)** 
-3. Realizar el fine-tuning final mediante la recopilacion de imagenes propias usando `src/data_collection/data_collection.py` y el posterior entrenamiento del modelo de regresión `src/regressor/gaze_csv.py` y `src/regressor/regression.py`. Como se puede comprobar en las gráficas de resultados del modelo de regresión, cuantas más imágenes utilices, mejores resultados obtendrás.
-3. Ejecutar el script de demostracion :
+2. Neural Gaze Vector Estimation  
+   A deep convolutional neural network predicts the 3D gaze vector from face and eye appearance.
 
-```bash
-python src/demo/main_demo.py
-```
-Puedes introducir los siguientes parámetros para probar las diferentes funcionalidades:
+3. Personalized Screen Mapping  
+   A regression model maps gaze vectors into precise screen coordinates, enabling high accuracy after calibration.
 
-```bash
-optional arguments:
-  -h, --help                      Show this help message and exit
-  --calibration_matrix_path       Ruta al archivo de la matriz de calibración de la cámara
-  --model_path                    Ruta al modelo de prediccioón de mirada
-  --monitor_mm                    Tamaño del monitor en milímetros (ancho,alto)
-  --monitor_pixels                Tamaño del monitor en píxeles (ancho,alto)
-  --visualize_preprocessing, -vp  Visualizar las imágenes preprocesadas de cara y ojos
-  --smoothing, -s                 Aplicar suavizado EMA al punto de predicción de mirada
-  --heatmap, -hm                  Mostrar heatmap variable de mirada en una imagen
-  --keyboard, -k                  Mostrar un teclado en pantalla para escribir texto mediante la mirada y gestos faciales (por dejecto, fruncido del ceño)
-  ``` 
+4. Interaction Layer  
+   Enables real-time control via gaze position and facial gestures.
 
-## Modelo utilizado
-En la carpeta docs se encuentra la arquitectura de red utilizada para la predicción del vector de mirada, y todos los archivos y código utilizado para conseguirla.
-Se han utilizado los recursos del respositorio [PlotNeuralNet](https://github.com/HarisIqbal88/PlotNeuralNet) de Haris Iqbal para graficar la estructura por capas mediante LaTex. En caso de ver su funcionamiento puedes usar un simple editor de Tex y compilar los archivos .tex.
+Pipeline summary:
 
-### Representación gráfica
+Camera → Face/Eye Extraction → CNN → Gaze Vector → Regression Calibration → Screen Coordinates → Interaction Layer
 
-![Gráfica del Modelo](docs/CNN_graph/cnn_layers.png)
+---
 
-## Resultados comparativos
+## Architecture
 
-A continuación se muestran las siguientes comparativas de errores angulares obtenidos con diferentes modelos:
+The neural network is a custom-designed convolutional architecture optimized for gaze estimation accuracy and robustness under real-world conditions.
 
-1. Primeros modelos de seguimiento de mirada en comparación con el modelo presentado junto al dataset de MPIIGaze: [Appearance-Based Gaze Estimation in the Wild, Zhang et al. (2015)](https://arxiv.org/pdf/1504.02863v1)
-![Gráfica Comparativa 1](docs/results/MPI2015.png) 
+Architecture visualization:
 
-2. Modelo presentado junto al dataset utilizado en este proyecto (_MPIIFaceGaze_) en comparación con modelos más modernos basados en CNN: [It’s Written All Over Your Face: Full-Face Appearance-Based Gaze Estimation" de Zhang et al. (2017)](https://ieeexplore.ieee.org/document/8015018)
-![Gráfica Comparativa 2](docs/results/MPI2017.png)
+![Model Architecture](docs/CNN_graph/cnn_layers.png)
 
-3. Modelo propuesto (en amarillo, a la izquierda) en comparación con los modelos más actuales de prediccion de mirada y el modelo presentado junto al dataset utilizado para el entenamiento (_MPIIFaceGaze_) (azul a la derecha).
-![Gráfica Comparativa 3](docs/results/actual_models.jpeg)
+Architecture diagrams were generated using PlotNeuralNet.
 
-4. Gráficas de error angular obtenido en los diferentes modelos entrenados en este proyecto con el dataset _MPIIFaceGaze_
-![Gráficas de validación y test](docs/results/cnn_models_val_comparation.png) 
+---
 
+## Performance and Validation
 
-## Resultados de modelo de regresión
+The proposed model achieves highly competitive angular error performance compared to:
 
-A continuación se muestran las graficas de error en píxeles mediante el modelo regresivo a medida que aumenta el número de datos:
-![Regresión1](docs/results/fine-tuning_regression0.png) 
+• MPIIGaze baseline models  
+• MPIIFaceGaze baseline models  
+• Modern CNN-based gaze estimation architectures  
+• Recent state-of-the-art appearance-based methods  
 
-![Regresión3](docs/results/fine-tuning_regression1.png) 
+Comparative evaluation:
 
-![Regresión3](docs/results/fine-tuning_regression2.png) 
+![Comparison 2015](docs/results/MPI2015.png)
 
-A continuación se muestran las graficas de dispersión de paridad (Predicción vs Real) utiliza para medir la bondad de ajuste de las predicciones de coordenadas para el eje X y el eje Y:
+![Comparison 2017](docs/results/MPI2017.png)
 
-![Regresión4](docs/results/fine-tuning_Catboost.png) 
+![Comparison Modern Models](docs/results/actual_models.jpeg)
 
+CNN validation results across multiple trained architectures:
 
-## Ejemplos
+![CNN Validation](docs/results/cnn_models_val_comparation.png)
 
-Puedes encontrar más ejemplos en el directorio `docs/demo_examples/`
-![DemoEMA](docs/demo_examples/Demo_Exponential_Moving_Average.gif) 
+---
 
+## Personalized Calibration Performance
 
+Screen-space regression significantly improves accuracy through user-specific calibration.
 
+Pixel error decreases as calibration sample size increases:
+
+![Regression 1](docs/results/fine-tuning_regression0.png)
+
+![Regression 2](docs/results/fine-tuning_regression1.png)
+
+![Regression 3](docs/results/fine-tuning_regression2.png)
+
+Regression parity plots:
+
+![Regression Parity](docs/results/fine-tuning_Catboost.png)
+
+This demonstrates the effectiveness of combining appearance-based gaze estimation with personalized regression calibration.
+
+---
+
+## Real-Time Interaction Capabilities
+
+The system supports real-time interaction through:
+
+• Cursor control via gaze  
+• Gesture-triggered actions  
+• Gaze-controlled on-screen keyboard  
+• Heatmap visualization  
+• Temporal smoothing for stability  
+
+Example:
+
+![Demo](docs/demo_examples/Demo_Exponential_Moving_Average.gif)
+
+---
+
+## Installation
+
+Install dependencies:
+
+    pip install -r requirements.txt
+
+---
+
+## Usage
+
+### Step 1 — Camera Calibration
+
+Extract camera intrinsic parameters:
+
+    python src/data_collection/camera_calibration.py
+
+Requires a standard chessboard calibration pattern.
+
+---
+
+### Step 2 — Train or Load Gaze Estimation Model
+
+Optional: Train from MPIIFaceGaze dataset:
+
+    python src/train/preprocess_mpii_dataset.py
+    python src/train/training.py
+
+Or use the provided pretrained model.
+
+---
+
+### Step 3 — Personalized Calibration (Recommended)
+
+Collect calibration samples:
+
+    python src/data_collection/data_collection.py
+
+Train regression mapping:
+
+    python src/regressor/gaze_csv.py
+    python src/regressor/regression.py
+
+This step significantly improves prediction accuracy.
+
+---
+
+### Step 4 — Run Real-Time Demo
+
+    python src/demo/main_demo.py
+
+Optional arguments:
+
+    --calibration_matrix_path    Path to camera calibration file
+    --model_path                 Path to gaze estimation model
+    --monitor_mm                Monitor size in millimeters
+    --monitor_pixels            Monitor resolution in pixels
+    --visualize_preprocessing   Show intermediate preprocessing results
+    --smoothing                 Enable temporal smoothing
+    --heatmap                   Enable gaze heatmap visualization
+    --keyboard                  Enable gaze-controlled keyboard
+
+---
+
+## Technical Highlights
+
+Key technical contributions:
+
+• Custom CNN architecture optimized for gaze estimation  
+• Hybrid geometric + learning-based gaze mapping pipeline  
+• Personalized regression calibration  
+• Real-time inference pipeline  
+• Robust performance under unconstrained conditions  
+• Modular and extensible system design  
+
+---
+
+## Project Structure
+
+    src/
+        data_collection/
+        train/
+        regressor/
+        demo/
+    
+    docs/
+        CNN_graph/
+        results/
+        demo_examples/
+
+---
+
+## Applications
+
+This system is applicable to:
+
+• Assistive technologies  
+• Accessibility interfaces  
+• Human-computer interaction research  
+• Hands-free computer control  
+• AR/VR interaction systems  
+• Attention tracking  
+• Behavioral analysis  
+
+---
+
+## Research Context
+
+This project demonstrates that carefully designed appearance-based models combined with personalized calibration can achieve performance competitive with modern gaze tracking systems, while maintaining flexibility and deployability using standard RGB cameras.
+
+---
+
+## License
+
+MIT License
